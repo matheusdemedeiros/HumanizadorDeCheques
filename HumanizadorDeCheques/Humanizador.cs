@@ -53,16 +53,41 @@ namespace HumanizadorDeCheques.Dominio
             List<List<string>> listasDeValoresPorExtenso
                 = CriarListaDeValoresPorExtenso(valorAgrupado);
 
-            //Terminar implementação
+            int contSuperior = listasDeValoresPorExtenso.Count;
 
-            //string sufixo = "";
+            for (int i = 0; i < listasDeValoresPorExtenso.Count; i++)
+            {
+                var list = listasDeValoresPorExtenso[i];
 
-            //if (listasDeValoresPorExtenso[0].FindIndex(x => x == "um") == 0)
-            //    resultado += "um milhão";
-            //else
-            //resultado += " reais";
+                string textoAtual = "";
 
-            //return resultado;
+                int contInferior = list.Count;
+
+                for (int j = 0; j < list.Count; j++)
+                {
+                    textoAtual += list[j];
+
+                    if (contInferior > 1)
+                    {
+                        textoAtual += " e ";
+                        contInferior--;
+                    }
+                }
+                if (i == 0)
+                    resultado += " mil";
+
+                if (resultado.Length > 0)
+                    resultado += " " + textoAtual;
+                else
+                    resultado += textoAtual;
+            }
+
+            if (resultado == "um")
+                resultado += " real";
+            else
+                resultado += " reais";
+
+            return resultado;
         }
 
         private string DefinirSufixo(int quantidadeDeGrupos, string valorLista)
@@ -71,7 +96,7 @@ namespace HumanizadorDeCheques.Dominio
 
             if (quantidadeDeGrupos == 2)
                 sufixo = "mil";
-            else if (quantidadeDeGrupos == 3 )
+            else if (quantidadeDeGrupos == 3)
                 sufixo = "milhões";
             else if (quantidadeDeGrupos == 4)
                 sufixo = "bilhões";
@@ -204,7 +229,7 @@ namespace HumanizadorDeCheques.Dominio
             else
             {
                 if (numero.StartsWith("1"))
-                    return "cento e ";
+                    return "cento";
                 else
                 {
                     value = numero.Substring(0, 1);
@@ -235,17 +260,17 @@ namespace HumanizadorDeCheques.Dominio
 
         private bool VerificaValorRedondo(string valor)
         {
-            bool resultado = false;
+            string valorSemPrimeiroDigito = valor.Remove(0, 1);
 
-            if (valor.StartsWith("0") == false)
-            {
-                for (int i = 1; i < valor.Length; i++)
-                {
-                    if (valor.Substring(i) == "0")
-                        resultado = true;
-                }
-            }
-            return resultado;
+            string zeros = "";
+
+            for (int i = 0; i < valorSemPrimeiroDigito.Length; i++)
+                zeros += "0";
+
+            if (valorSemPrimeiroDigito == zeros)
+                return true;
+
+            return false;
         }
     }
 }
